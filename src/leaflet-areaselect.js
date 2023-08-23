@@ -11,19 +11,17 @@ L.AreaSelect = L.Class.extend({
         keepAspectRatio: false,
     },
 
-    initialize: function(options) {
+    initialize: function (options) {
         L.Util.setOptions(this, options);
-        
+
         this._width = this.options.width;
         this._height = this.options.height;
     },
-    
-    addTo: function(map) {
+
+    addTo: function (map) {
         this.map = map;
-        if (this._container)
-            this.map._controlContainer.appendChild(this._container)
-        else
-            this._createElements();
+        if (this._container) this.map._controlContainer.appendChild(this._container);
+        else this._createElements();
         this.map.on("moveend", this._onMapChange, this);
         this.map.on("zoomend", this._onMapChange, this);
         this.map.on("resize", this._onMapResize, this);
@@ -32,26 +30,26 @@ L.AreaSelect = L.Class.extend({
         this._render();
         return this;
     },
-    
-    getBounds: function() {
+
+    getBounds: function () {
         const size = this.map.getSize();
         const topRight = new L.Point();
         const bottomLeft = new L.Point();
-        
+
         bottomLeft.x = Math.round((size.x - this._width) / 2);
         topRight.y = Math.round((size.y - this._height) / 2);
         topRight.x = size.x - bottomLeft.x;
         bottomLeft.y = size.y - topRight.y;
-        
+
         const sw = this.map.containerPointToLatLng(bottomLeft);
         const ne = this.map.containerPointToLatLng(topRight);
-        
+
         return new L.LatLngBounds(sw, ne);
     },
-    
-    getBBoxCoordinates: function() {
+
+    getBBoxCoordinates: function () {
         const size = this.map.getSize();
-      
+
         const topRight = new L.Point();
         const bottomLeft = new L.Point();
         const topLeft = new L.Point();
@@ -67,29 +65,26 @@ L.AreaSelect = L.Class.extend({
         bottomRight.x = topRight.x;
         bottomRight.y = bottomLeft.y;
 
-        const coordinates =
-            [
-                {"sw": this.map.containerPointToLatLng(bottomLeft)},
-                {"nw": this.map.containerPointToLatLng(topLeft)},
-                {"ne": this.map.containerPointToLatLng(topRight)},
-                {"se": this.map.containerPointToLatLng(bottomRight)}
-            ]
-		
-        return coordinates
+        const coordinates = [
+            { sw: this.map.containerPointToLatLng(bottomLeft) },
+            { nw: this.map.containerPointToLatLng(topLeft) },
+            { ne: this.map.containerPointToLatLng(topRight) },
+            { se: this.map.containerPointToLatLng(bottomRight) },
+        ];
+
+        return coordinates;
     },
-    
-    remove: function() {
+
+    remove: function () {
         this.map.off("moveend", this._onMapChange);
         this.map.off("zoomend", this._onMapChange);
         this.map.off("resize", this._onMapResize);
-        
+
         this._container.parentNode.removeChild(this._container);
     },
 
-    
-    setDimensions: function(dimensions) {
-        if (!dimensions)
-            return;
+    setDimensions: function (dimensions) {
+        if (!dimensions) return;
 
         this._height = parseInt(dimensions.height) || this._height;
         this._width = parseInt(dimensions.width) || this._width;
@@ -97,32 +92,30 @@ L.AreaSelect = L.Class.extend({
         this.fire("change");
     },
 
-    
-    _createElements: function() {
-        if (!!this._container)
-            return;
-        
-        this._container = L.DomUtil.create("div", "leaflet-areaselect-container", this.map._controlContainer)
+    _createElements: function () {
+        if (!!this._container) return;
+
+        this._container = L.DomUtil.create("div", "leaflet-areaselect-container", this.map._controlContainer);
         this._topShade = L.DomUtil.create("div", "leaflet-areaselect-shade leaflet-control", this._container);
         this._bottomShade = L.DomUtil.create("div", "leaflet-areaselect-shade leaflet-control", this._container);
         this._leftShade = L.DomUtil.create("div", "leaflet-areaselect-shade leaflet-control", this._container);
         this._rightShade = L.DomUtil.create("div", "leaflet-areaselect-shade leaflet-control", this._container);
-        
+
         this._nwHandle = L.DomUtil.create("div", "leaflet-areaselect-handle leaflet-control", this._container);
         this._swHandle = L.DomUtil.create("div", "leaflet-areaselect-handle leaflet-control", this._container);
         this._neHandle = L.DomUtil.create("div", "leaflet-areaselect-handle leaflet-control", this._container);
         this._seHandle = L.DomUtil.create("div", "leaflet-areaselect-handle leaflet-control", this._container);
-        
+
         this._setUpHandlerEvents(this._nwHandle);
         this._setUpHandlerEvents(this._neHandle, -1, 1);
         this._setUpHandlerEvents(this._swHandle, 1, -1);
         this._setUpHandlerEvents(this._seHandle, -1, -1);
     },
-    
-    _setUpHandlerEvents: function(handle, xMod, yMod) {
+
+    _setUpHandlerEvents: function (handle, xMod, yMod) {
         xMod = xMod || 1;
         yMod = yMod || 1;
-        
+
         const self = this;
         function onPointerDown(event) {
             event.stopPropagation();
@@ -134,10 +127,12 @@ L.AreaSelect = L.Class.extend({
             const ratio = self._width / self._height;
             const size = self.map.getSize();
             const mapContainer = self.map.getContainer();
-            
+
             function onPointerMove(event) {
                 if (self.options.keepAspectRatio) {
-                    const maxHeight = (self._height >= self._width ? size.y : size.y * (1/ratio) ) - Math.max(self.options.minVerticalSpacing, self.options.minHorizontalSpacing);
+                    const maxHeight =
+                        (self._height >= self._width ? size.y : size.y * (1 / ratio)) -
+                        Math.max(self.options.minVerticalSpacing, self.options.minHorizontalSpacing);
                     self._height += (curY - event.pageY) * 2 * yMod;
                     self._height = Math.max(self.options.minHeight, self.options.minWidth, self._height);
                     self._height = Math.min(maxHeight, self._height);
@@ -147,10 +142,10 @@ L.AreaSelect = L.Class.extend({
                     self._height += (curY - event.pageY) * 2 * yMod;
                     self._width = Math.max(self.options.minWidth, self._width);
                     self._height = Math.max(self.options.minHeight, self._height);
-                    self._width = Math.min(size.x-self.options.minHorizontalSpacing, self._width);
-                    self._height = Math.min(size.y-self.options.minVerticalSpacing, self._height);
+                    self._width = Math.min(size.x - self.options.minHorizontalSpacing, self._width);
+                    self._height = Math.min(size.y - self.options.minVerticalSpacing, self._height);
                 }
-                
+
                 curX = event.pageX;
                 curY = event.pageY;
                 self._render();
@@ -167,24 +162,24 @@ L.AreaSelect = L.Class.extend({
         }
         L.DomEvent.addListener(handle, "pointerdown", onPointerDown);
     },
-    
-    _onMapResize: function() {
+
+    _onMapResize: function () {
         this._render();
     },
-    
-    _onMapChange: function() {
+
+    _onMapChange: function () {
         this.fire("change");
     },
-    
-    _render: function() {
-        const size = this.map.getSize();
-        const handleOffset = Math.round(this._nwHandle.offsetWidth/2);
 
-        const topBottomWidth = size.x
+    _render: function () {
+        const size = this.map.getSize();
+        const handleOffset = Math.round(this._nwHandle.offsetWidth / 2);
+
+        const topBottomWidth = size.x;
         const topBottomHeight = Math.round((size.y - this._height) / 2);
         const leftRightWidth = Math.round((size.x - this._width) / 2);
-        const leftRightHeight = size.y - (topBottomHeight * 2);
-        
+        const leftRightHeight = size.y - topBottomHeight * 2;
+
         function setDimensions(element, dimension) {
             element.style.width = dimension.width + "px";
             element.style.height = dimension.height + "px";
@@ -198,34 +193,34 @@ L.AreaSelect = L.Class.extend({
             width: topBottomWidth,
             height: topBottomHeight,
             top: 0,
-            left: 0
+            left: 0,
         });
         setDimensions(this._bottomShade, {
             width: topBottomWidth,
             height: topBottomHeight,
             top: size.y - topBottomHeight,
-            left: 0
+            left: 0,
         });
         setDimensions(this._leftShade, {
             width: leftRightWidth,
             height: leftRightHeight,
             top: topBottomHeight,
-            left: 0
+            left: 0,
         });
         setDimensions(this._rightShade, {
             width: leftRightWidth,
             height: leftRightHeight,
             top: topBottomHeight,
-            left: size.x - leftRightWidth
+            left: size.x - leftRightWidth,
         });
-        
-        setDimensions(this._nwHandle, {left:leftRightWidth-handleOffset, top:topBottomHeight-7});
-        setDimensions(this._neHandle, {right:leftRightWidth-handleOffset, top:topBottomHeight-7});
-        setDimensions(this._swHandle, {left:leftRightWidth-handleOffset, bottom:topBottomHeight-7});
-        setDimensions(this._seHandle, {right:leftRightWidth-handleOffset, bottom:topBottomHeight-7});
-    }
+
+        setDimensions(this._nwHandle, { left: leftRightWidth - handleOffset, top: topBottomHeight - 7 });
+        setDimensions(this._neHandle, { right: leftRightWidth - handleOffset, top: topBottomHeight - 7 });
+        setDimensions(this._swHandle, { left: leftRightWidth - handleOffset, bottom: topBottomHeight - 7 });
+        setDimensions(this._seHandle, { right: leftRightWidth - handleOffset, bottom: topBottomHeight - 7 });
+    },
 });
 
-L.areaSelect = function(options) {
+L.areaSelect = function (options) {
     return new L.AreaSelect(options);
-}
+};

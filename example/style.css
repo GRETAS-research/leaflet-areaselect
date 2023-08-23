@@ -1,6 +1,11 @@
-* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
 
-html, body {
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -20,15 +25,16 @@ html, body {
     bottom: 0;
     width: 100%;
     height: 150px;
-    
-    -webkit-box-shadow: 0 -1px 15px rgba(0,0,0, 0.2);
-    box-shadow: 0 -1px 15px rgba(0,0,0, 0.2);
+
+    -webkit-box-shadow: 0 -1px 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -1px 15px rgba(0, 0, 0, 0.2);
 }
 
-#result input[type='text'] {
+#result input[type="text"] {
     width: 260px;
 }
-.left, .right {
+.left,
+.right {
     float: left;
     width: 50%;
 }
