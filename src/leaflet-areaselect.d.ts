@@ -28,7 +28,7 @@ declare module "leaflet" {
   class AreaSelect extends L.Evented {
     constructor(options?: Partial<AreaSelectOptions>);
     addTo(map: L.Map): L.Map;
-    revove(): void;
+    remove(): void;
     setBounds(width: number, height: number): void;
     getBounds(): L.LatLngBounds;
     setDimensions(dimensions: Dimensions): void;
