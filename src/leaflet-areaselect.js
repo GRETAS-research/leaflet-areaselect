@@ -31,6 +31,20 @@ L.AreaSelect = L.Class.extend({
         return this;
     },
 
+    setBounds: function (width, height) {
+        let wasChanged = false;
+        if (this._width != width && this._height != height) {
+            wasChanged = true;
+        }
+        this._width = width;
+        this._height = height;
+
+        if (wasChanged) {
+            this.fire("change");
+            this._render();
+        }
+    },
+
     getBounds: function () {
         const size = this.map.getSize();
         const topRight = new L.Point();
