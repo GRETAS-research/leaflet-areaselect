@@ -1,6 +1,6 @@
 {
   "name": "leaflet-areaselect",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A fixed positioned, resizable rectangle for selecting an area on the map.",
   "main": "./src/leaflet-areaselect.js",
   "style": "src/leaflet-areaselect.css",
@@ -13,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/heyman/leaflet-areaselect.git"
+    "url": "git+https://github.com/GRETAS-research/leaflet-areaselect.git"
   },
   "author": "Jonatan Heyman",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/heyman/leaflet-areaselect/issues"
+    "url": "https://github.com/GRETAS-research/leaflet-areaselect/issues"
   },
-  "homepage": "https://github.com/heyman/leaflet-areaselect",
+  "homepage": "https://github.com/GRETAS-research/leaflet-areaselect",
   "dependencies": {
     "@types/leaflet": "*"
   }
