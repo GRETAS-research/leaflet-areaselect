@@ -13,11 +13,6 @@ declare module "leaflet" {
     keepAspectRatio: boolean;
   };
 
-  type Dimensions = {
-    width: number;
-    height: number;
-  };
-
   type Corners = {
     sw: L.LatLng;
     nw: L.LatLng;
@@ -29,9 +24,8 @@ declare module "leaflet" {
     constructor(options?: Partial<AreaSelectOptions>);
     addTo(map: L.Map): L.Map;
     remove(): void;
-    setBounds(width: number, height: number): void;
     getBounds(): L.LatLngBounds;
-    setDimensions(dimensions: Dimensions): void;
+    setDimensions(width: number, height: number): void;
     getBBoxCoordinates(): Corners;
   }
 }

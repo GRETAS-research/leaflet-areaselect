@@ -25,27 +25,12 @@ L.AreaSelect = L.Class.extend({
         } else {
             this._createElements();
         }
-        this.map.on("moveend", this._onMapChange, this);
-        this.map.on("zoomend", this._onMapChange, this);
+        this.map.on("move", this._onMapChange, this);
+        this.map.on("zoom", this._onMapChange, this);
         this.map.on("resize", this._onMapResize, this);
 
-        this.fire("change");
         this._render();
         return this;
-    },
-
-    setBounds: function (width, height) {
-        let wasChanged = false;
-        if (this._width != width && this._height != height) {
-            wasChanged = true;
-        }
-        this._width = width;
-        this._height = height;
-
-        if (wasChanged) {
-            this.fire("change");
-            this._render();
-        }
     },
 
     getBounds: function () {
@@ -93,22 +78,22 @@ L.AreaSelect = L.Class.extend({
     },
 
     remove: function () {
-        this.map.off("moveend", this._onMapChange);
-        this.map.off("zoomend", this._onMapChange);
+        this.map.off("move", this._onMapChange);
+        this.map.off("zoom", this._onMapChange);
         this.map.off("resize", this._onMapResize);
 
         this._container.parentNode.removeChild(this._container);
     },
 
-    setDimensions: function (dimensions) {
-        if (!dimensions) {
-            return;
-        }
+    setDimensions: function (width, height) {
+        const wasChanged = this._width != width && this._height != height;
+        this._width = width;
+        this._height = height;
 
-        this._height = parseInt(dimensions.height) || this._height;
-        this._width = parseInt(dimensions.width) || this._width;
-        this._render();
-        this.fire("change");
+        if (wasChanged) {
+            this._render();
+            this.fire("change");
+        }
     },
 
     _createElements: function () {
@@ -170,13 +155,13 @@ L.AreaSelect = L.Class.extend({
                 curX = event.pageX;
                 curY = event.pageY;
                 self._render();
+                self.fire("change");
             }
             function onPointerUp(event) {
                 self.map.dragging.enable();
                 L.DomEvent.removeListener(mapContainer, "pointerup", onPointerUp);
                 L.DomEvent.removeListener(mapContainer, "pointermove", onPointerMove);
                 L.DomEvent.addListener(handle, "pointerdown", onPointerDown);
-                self.fire("change");
             }
             L.DomEvent.addListener(mapContainer, "pointermove", onPointerMove);
             L.DomEvent.addListener(mapContainer, "pointerup", onPointerUp);
@@ -201,7 +186,7 @@ L.AreaSelect = L.Class.extend({
         const leftRightWidth = Math.round((size.x - this._width) / 2);
         const leftRightHeight = size.y - topBottomHeight * 2;
 
-        function setDimensions(element, dimension) {
+        function updateElement(element, dimension) {
             element.style.width = dimension.width + "px";
             element.style.height = dimension.height + "px";
             element.style.top = dimension.top + "px";
@@ -210,35 +195,35 @@ L.AreaSelect = L.Class.extend({
             element.style.right = dimension.right + "px";
         }
 
-        setDimensions(this._topShade, {
+        updateElement(this._topShade, {
             width: topBottomWidth,
             height: topBottomHeight,
             top: 0,
             left: 0,
         });
-        setDimensions(this._bottomShade, {
+        updateElement(this._bottomShade, {
             width: topBottomWidth,
             height: topBottomHeight,
             top: size.y - topBottomHeight,
             left: 0,
         });
-        setDimensions(this._leftShade, {
+        updateElement(this._leftShade, {
             width: leftRightWidth,
             height: leftRightHeight,
             top: topBottomHeight,
             left: 0,
         });
-        setDimensions(this._rightShade, {
+        updateElement(this._rightShade, {
             width: leftRightWidth,
             height: leftRightHeight,
             top: topBottomHeight,
             left: size.x - leftRightWidth,
         });
 
-        setDimensions(this._nwHandle, { left: leftRightWidth - handleOffset, top: topBottomHeight - 7 });
-        setDimensions(this._neHandle, { right: leftRightWidth - handleOffset, top: topBottomHeight - 7 });
-        setDimensions(this._swHandle, { left: leftRightWidth - handleOffset, bottom: topBottomHeight - 7 });
-        setDimensions(this._seHandle, { right: leftRightWidth - handleOffset, bottom: topBottomHeight - 7 });
+        updateElement(this._nwHandle, { left: leftRightWidth - handleOffset, top: topBottomHeight - 7 });
+        updateElement(this._neHandle, { right: leftRightWidth - handleOffset, top: topBottomHeight - 7 });
+        updateElement(this._swHandle, { left: leftRightWidth - handleOffset, bottom: topBottomHeight - 7 });
+        updateElement(this._seHandle, { right: leftRightWidth - handleOffset, bottom: topBottomHeight - 7 });
     },
 });
 
