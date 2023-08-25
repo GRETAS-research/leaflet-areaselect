@@ -22,6 +22,12 @@ but doesn't support keeping the aspect ratio.
     areaSelect.on("change", function() {
         console.log("Bounds:", this.getBounds());
     });
+
+    // Get a callback when the bounds changed, after dragging or moving has ended
+    // this will reduce callbacks significantly
+    areaSelect.on("changed", function() {
+        console.log("Bounds:", this.getBounds());
+    });
     
     // Set the dimensions of the box
     areaSelect.setDimensions({width: 500, height: 500})

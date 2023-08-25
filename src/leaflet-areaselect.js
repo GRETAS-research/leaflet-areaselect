@@ -27,6 +27,8 @@ L.AreaSelect = L.Class.extend({
         }
         this.map.on("move", this._onMapChange, this);
         this.map.on("zoom", this._onMapChange, this);
+        this.map.on("moveend", this._onMapChanged, this);
+        this.map.on("zoomend", this._onMapChanged, this);
         this.map.on("resize", this._onMapResize, this);
 
         this._render();
@@ -80,6 +82,8 @@ L.AreaSelect = L.Class.extend({
     remove: function () {
         this.map.off("move", this._onMapChange);
         this.map.off("zoom", this._onMapChange);
+        this.map.off("moveend", this._onMapChanged);
+        this.map.off("zoomend", this._onMapChanged);
         this.map.off("resize", this._onMapResize);
 
         this._container.parentNode.removeChild(this._container);
@@ -93,6 +97,7 @@ L.AreaSelect = L.Class.extend({
         if (wasChanged) {
             this._render();
             this.fire("change");
+            this.fire("changed");
         }
     },
 
@@ -162,6 +167,7 @@ L.AreaSelect = L.Class.extend({
                 L.DomEvent.removeListener(mapContainer, "pointerup", onPointerUp);
                 L.DomEvent.removeListener(mapContainer, "pointermove", onPointerMove);
                 L.DomEvent.addListener(handle, "pointerdown", onPointerDown);
+                this.fire("changed");
             }
             L.DomEvent.addListener(mapContainer, "pointermove", onPointerMove);
             L.DomEvent.addListener(mapContainer, "pointerup", onPointerUp);
@@ -175,6 +181,10 @@ L.AreaSelect = L.Class.extend({
 
     _onMapChange: function () {
         this.fire("change");
+    },
+
+    _onMapChanged: function () {
+        this.fire("changed");
     },
 
     _render: function () {
