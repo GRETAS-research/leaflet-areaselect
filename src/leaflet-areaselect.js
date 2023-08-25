@@ -167,7 +167,7 @@ L.AreaSelect = L.Class.extend({
                 L.DomEvent.removeListener(mapContainer, "pointerup", onPointerUp);
                 L.DomEvent.removeListener(mapContainer, "pointermove", onPointerMove);
                 L.DomEvent.addListener(handle, "pointerdown", onPointerDown);
-                this.fire("changed");
+                self.fire("changed");
             }
             L.DomEvent.addListener(mapContainer, "pointermove", onPointerMove);
             L.DomEvent.addListener(mapContainer, "pointerup", onPointerUp);
