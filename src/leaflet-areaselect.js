@@ -35,6 +35,15 @@ L.AreaSelect = L.Class.extend({
         return this;
     },
 
+    setBounds: function (bounds) {
+        const nwPx = this.map.latLngToContainerPoint(L.latLng(bounds.getNorth(), bounds.getWest()));
+        const sePx = this.map.latLngToContainerPoint(L.latLng(bounds.getSouth(), bounds.getEast()));
+
+        this._width = sePx.x - nwPx.x;
+        this._height = sePx.y - nwPx.y;
+        this._render();
+    },
+
     getBounds: function () {
         const size = this.map.getSize();
         const topRight = new L.Point();

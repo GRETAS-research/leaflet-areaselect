@@ -24,6 +24,7 @@ declare module "leaflet" {
     constructor(options?: Partial<AreaSelectOptions>);
     addTo(map: L.Map): L.Map;
     remove(): void;
+    setBounds(bounds: L.LatLngBounds): void;
     getBounds(): L.LatLngBounds;
     setDimensions(width: number, height: number): void;
     getBBoxCoordinates(): Corners;
